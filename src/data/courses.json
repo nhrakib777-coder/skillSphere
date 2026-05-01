@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "title": "Complete Web Development Bootcamp",
+    "instructor": "John Doe",
+    "duration": "20 hours",
+    "rating": 4.8,
+    "level": "Beginner",
+    "description": "Learn full-stack web development from scratch with HTML, CSS, JS, React, Node.js.",
+    "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+    "category": "Development"
+  },
+  {
+    "id": 2,
+    "title": "UI/UX Design Masterclass",
+    "instructor": "Sarah Smith",
+    "duration": "15 hours",
+    "rating": 4.9,
+    "level": "Intermediate",
+    "description": "Master Figma, user research, prototyping and modern design principles.",
+    "image": "https://images.unsplash.com/photo-1586717799252-bd134ad00e26",
+    "category": "Design"
+  },
+  {
+    "id": 3,
+    "title": "Digital Marketing Pro",
+    "instructor": "Mike Johnson",
+    "duration": "12 hours",
+    "rating": 4.7,
+    "level": "All Levels",
+    "description": "Grow your business with SEO, Social Media, Google Ads and Email Marketing.",
+    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
+    "category": "Marketing"
+  },
+  {
+    "id": 4,
+    "title": "React JS Advanced",
+    "instructor": "Emily Davis",
+    "duration": "18 hours",
+    "rating": 4.8,
+    "level": "Advanced",
+    "description": "Master React Hooks, Redux, Next.js and performance optimization.",
+    "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
+    "category": "Development"
+  },
+  {
+    "id": 5,
+    "title": "Graphic Design Essentials",
+    "instructor": "Lisa Brown",
+    "duration": "10 hours",
+    "rating": 4.6,
+    "level": "Beginner",
+    "description": "Learn Photoshop, Illustrator and create stunning graphics for social media.",
+    "image": "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70",
+    "category": "Design"
+  },
+  {
+    "id": 6,
+    "title": "Content Writing Mastery",
+    "instructor": "David Wilson",
+    "duration": "8 hours",
+    "rating": 4.9,
+    "level": "All Levels",
+    "description": "Write engaging blogs, copywriting and SEO-friendly content.",
+    "image": "https://images.unsplash.com/photo-1455390582262-044cdead277a",
+    "category": "Marketing"
+  }
+]
