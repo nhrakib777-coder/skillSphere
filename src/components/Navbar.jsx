@@ -16,20 +16,22 @@ const Navbar = () => {
 
   // 🔹 Active link style
   const linkClass = (path) =>
-    `font-medium transition ${
+    `block py-2 px-3 rounded-md transition ${
       pathname === path
-        ? "text-primary border-b-2 border-primary pb-1"
-        : "hover:text-primary"
+        ? "text-primary bg-primary/10 font-semibold"
+        : "hover:text-primary hover:bg-gray-100"
     }`;
 
-  // 🔹 Handle search submit
+  // 🔹 Handle search
   const handleSearch = (e) => {
     e.preventDefault();
     if (!search.trim()) return;
     router.push(`/courses?search=${search}`);
     setSearch("");
+    setMenuOpen(false); // close mobile menu after search
   };
 
+  // 🔹 Loading
   if (status === "loading") {
     return (
       <div className="h-16 flex items-center justify-center">
@@ -47,19 +49,19 @@ const Navbar = () => {
           SkillSphere
         </Link>
 
-        {/* 🔍 Search Bar (Desktop) */}
+        {/* 🔍 Search (Desktop) */}
         <form
           onSubmit={handleSearch}
-          className="hidden md:flex items-center border rounded-full px-3 py-1 w-72"
+          className="hidden md:flex items-center border rounded-full px-4 py-1.5 w-72 bg-gray-50"
         >
           <input
             type="text"
             placeholder="Search courses..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 outline-none px-2 text-sm bg-transparent"
+            className="flex-1 outline-none text-sm bg-transparent"
           />
-          <button type="submit">🔍</button>
+          <button className="text-lg">🔍</button>
         </form>
 
         {/* Desktop Menu */}
@@ -84,7 +86,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-xl"
+            className="md:hidden text-2xl"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             ☰
@@ -106,8 +108,12 @@ const Navbar = () => {
                 />
               </button>
 
+              {/* Dropdown */}
               <div className="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
-                <Link href="/profile" className="block px-4 py-2 hover:bg-gray-100">
+                <Link
+                  href="/profile"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                >
                   Profile
                 </Link>
 
@@ -120,7 +126,7 @@ const Navbar = () => {
               </div>
             </div>
           ) : (
-            <>
+            <div className="hidden md:flex gap-3">
               <Link href="/login" className="font-medium hover:text-primary">
                 Login
               </Link>
@@ -131,34 +137,77 @@ const Navbar = () => {
               >
                 Register
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>
 
-      {/* 📱 Mobile Menu + Search */}
+      {/* 📱 Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden px-4 pb-4 space-y-3 bg-white shadow">
+        <div className="md:hidden px-4 pb-5 pt-3 bg-white shadow-lg rounded-b-2xl space-y-4 animate-fadeIn">
 
-          {/* Mobile Search */}
-          <form onSubmit={handleSearch} className="flex border rounded-full px-3 py-1">
+          {/* 🔍 Mobile Search */}
+          <form
+            onSubmit={handleSearch}
+            className="flex items-center border rounded-full px-4 py-2 bg-gray-50"
+          >
             <input
               type="text"
               placeholder="Search courses..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 outline-none px-2 text-sm bg-transparent"
+              className="flex-1 outline-none text-sm bg-transparent"
             />
-            <button type="submit">🔍</button>
+            <button className="text-lg">🔍</button>
           </form>
 
-          <Link href="/" className={linkClass("/")}>Home</Link>
-          <Link href="/courses" className={linkClass("/courses")}>Courses</Link>
+          {/* Divider */}
+          <div className="border-t"></div>
 
-          {isLoggedIn && (
-            <Link href="/profile" className={linkClass("/profile")}>
-              My Profile
+          {/* Links */}
+          <div className="flex flex-col gap-2">
+            <Link href="/" className={linkClass("/")} onClick={() => setMenuOpen(false)}>
+              Home
             </Link>
+
+            <Link href="/courses" className={linkClass("/courses")} onClick={() => setMenuOpen(false)}>
+              Courses
+            </Link>
+
+            {isLoggedIn && (
+              <Link href="/profile" className={linkClass("/profile")} onClick={() => setMenuOpen(false)}>
+                My Profile
+              </Link>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div className="border-t"></div>
+
+          {/* Auth Section */}
+          {!isLoggedIn ? (
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/login"
+                className="w-full text-center py-2 border rounded-lg hover:bg-gray-100 transition"
+              >
+                Login
+              </Link>
+
+              <Link
+                href="/register"
+                className="w-full text-center py-2 bg-primary text-white rounded-lg hover:opacity-90 transition"
+              >
+                Register
+              </Link>
+            </div>
+          ) : (
+            <button
+              onClick={logout}
+              className="w-full py-2 text-red-500 border rounded-lg hover:bg-red-50 transition"
+            >
+              Logout
+            </button>
           )}
         </div>
       )}
