@@ -73,7 +73,7 @@ export default function Home() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {instructors.map((ins) => (
-            <div key={ins.id} className="text-center card-hover p-4">
+            <div key={ins.id} className="text-center card-hover p-4 rounded-lg shadow-md">
               <Image
                 src={ins.img}
                 alt={ins.name}
@@ -98,21 +98,21 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-lg card-hover">
+            <div className="bg-white p-6 rounded-xl shadow-lg card-hover text-center">
               <h3 className="text-xl font-bold mb-3">Stay Consistent</h3>
               <p className="text-gray-600">
                 Study daily for small sessions rather than long occasional sessions.
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-lg card-hover">
+            <div className="bg-white p-6 rounded-xl shadow-lg card-hover text-center">
               <h3 className="text-xl font-bold mb-3">Practice Project Based</h3>
               <p className="text-gray-600">
                 Build real projects while learning to master skills faster.
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-lg card-hover">
+            <div className="bg-white p-6 rounded-xl shadow-lg card-hover text-center">
               <h3 className="text-xl font-bold mb-3">Time Management</h3>
               <p className="text-gray-600">
                 Make a routine and follow it strictly for best results.
