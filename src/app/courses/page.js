@@ -1,10 +1,8 @@
-import { Suspense } from "react";
 import AllCourses from "./AllCourses";
 
-export default function Page() {
-  return (
-    <Suspense fallback={<div className="text-center py-10">Loading...</div>}>
-      <AllCourses />
-    </Suspense>
-  );
+export default async function Page() {
+  // ⏳ simulate loading (for testing)
+  await new Promise((res) => setTimeout(res, 2000));
+
+  return <AllCourses />;
 }

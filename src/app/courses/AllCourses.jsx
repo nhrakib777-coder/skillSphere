@@ -9,7 +9,6 @@ export default function AllCourses() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
 
-  // ✅ filter using URL search
   const filteredCourses = useMemo(() => {
     return courses.filter((c) =>
       `${c.title} ${c.category} ${c.instructor}`
@@ -21,24 +20,24 @@ export default function AllCourses() {
   return (
     <div className="container mx-auto px-4 py-12">
 
-      {/* Title */}
       <h2 className="text-3xl font-bold text-center mb-6">
         All Courses
       </h2>
 
-      {/* 🔍 Show current search */}
+      {/* 🔍 Search result text */}
       {search && (
         <p className="text-center text-gray-500 mb-4">
-          Showing results for: <span className="font-semibold">"{search}"</span>
+          Showing results for:{" "}
+          <span className="font-semibold">"{search}"</span>
         </p>
       )}
 
-      {/* Result Count */}
+      {/* Result count */}
       <p className="text-center text-gray-500 mb-8">
         {filteredCourses.length} course(s) found
       </p>
 
-      {/* Empty State */}
+      {/* Empty */}
       {filteredCourses.length === 0 ? (
         <div className="text-center py-20">
           <h3 className="text-xl font-semibold text-gray-600">
