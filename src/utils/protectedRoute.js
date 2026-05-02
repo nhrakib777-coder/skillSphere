@@ -1,17 +1,21 @@
 "use client";
+
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 export const useProtectedRoute = () => {
-  const { isLoggedIn, status } = useAuth();
+  const { status } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
+    // ✅ wait until auth check finishes
     if (status === "unauthenticated") {
-      router.push("/login?redirect=" + window.location.pathname);
+      router.replace(`/login?redirect=${pathname}`);
     }
-  }, [status, isLoggedIn, router]);
+  }, [status, pathname, router]);
 
+  // ✅ return loading state for UI
   return status === "loading";
 };

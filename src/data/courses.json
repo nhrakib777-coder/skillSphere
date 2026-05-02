@@ -7,7 +7,7 @@
     "rating": 4.8,
     "level": "Beginner",
     "description": "Learn full-stack web development from scratch with HTML, CSS, JS, React, Node.js.",
-    "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+    "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
     "category": "Development"
   },
   {
@@ -18,7 +18,7 @@
     "rating": 4.9,
     "level": "Intermediate",
     "description": "Master Figma, user research, prototyping and modern design principles.",
-    "image": "https://images.unsplash.com/photo-1586717799252-bd134ad00e26",
+    "image": "https://images.unsplash.com/photo-1586717799252-bd134ad00e26?w=800&q=80",
     "category": "Design"
   },
   {
@@ -29,7 +29,7 @@
     "rating": 4.7,
     "level": "All Levels",
     "description": "Grow your business with SEO, Social Media, Google Ads and Email Marketing.",
-    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
+    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
     "category": "Marketing"
   },
   {
@@ -40,7 +40,7 @@
     "rating": 4.8,
     "level": "Advanced",
     "description": "Master React Hooks, Redux, Next.js and performance optimization.",
-    "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
+    "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
     "category": "Development"
   },
   {
@@ -51,7 +51,7 @@
     "rating": 4.6,
     "level": "Beginner",
     "description": "Learn Photoshop, Illustrator and create stunning graphics for social media.",
-    "image": "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70",
+    "image": "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=800&q=80",
     "category": "Design"
   },
   {
@@ -62,7 +62,7 @@
     "rating": 4.9,
     "level": "All Levels",
     "description": "Write engaging blogs, copywriting and SEO-friendly content.",
-    "image": "https://images.unsplash.com/photo-1455390582262-044cdead277a",
+    "image": "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&q=80",
     "category": "Marketing"
   }
 ]
