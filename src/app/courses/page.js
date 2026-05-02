@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import courses from "@/data/courses.json";
 import CourseCard from "@/components/CourseCard";
 
 export default function AllCourses() {
-  const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") || "";
 
-  // ✅ optimized filtering
+  // ✅ filter using URL search
   const filteredCourses = useMemo(() => {
     return courses.filter((c) =>
       `${c.title} ${c.category} ${c.instructor}`
@@ -24,27 +26,12 @@ export default function AllCourses() {
         All Courses
       </h2>
 
-      {/* Search */}
-      <div className="max-w-md mx-auto mb-6 relative">
-
-        <input
-          type="text"
-          placeholder="Search by title, category, instructor..."
-          className="input input-bordered w-full pr-10"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        {/* Clear Button */}
-        {search && (
-          <button
-            onClick={() => setSearch("")}
-            className="absolute right-3 top-2 text-gray-400 hover:text-red-500"
-          >
-            ✕
-          </button>
-        )}
-      </div>
+      {/* 🔍 Show current search */}
+      {search && (
+        <p className="text-center text-gray-500 mb-4">
+          Showing results for: <span className="font-semibold">"{search}"</span>
+        </p>
+      )}
 
       {/* Result Count */}
       <p className="text-center text-gray-500 mb-8">
