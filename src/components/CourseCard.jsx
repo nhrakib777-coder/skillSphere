@@ -5,7 +5,7 @@ const CourseCard = ({ course }) => {
   if (!course) return null;
 
   return (
-    <div className="card bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-xl rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+    <div className="card bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-xl rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
 
       {/* Image */}
       <figure className="overflow-hidden">
@@ -56,7 +56,7 @@ const CourseCard = ({ course }) => {
         <div className="mt-4">
           <Link
             href={`/courses/${course.id}`}
-            className="block w-full text-center py-2 rounded-lg bg-primary/80 backdrop-blur-md text-white hover:bg-primary transition"
+            className="block w-full text-center py-2 rounded-full bg-primary/80 backdrop-blur-md text-white hover:bg-primary transition"
           >
             View Details
           </Link>

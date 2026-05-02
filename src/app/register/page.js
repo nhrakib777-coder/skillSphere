@@ -1,10 +1,10 @@
 "use client";
-
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { useAuth } from "@/context/AuthContext";
+
 import Image from "next/image";
 
 export default function Register() {
@@ -14,24 +14,25 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login, updateUser } = useAuth();
+  const { register, googleLogin, updateUser } = useAuth();
   const router = useRouter();
 
-  // ✅ validation
+  // ✅ validate image URL
   const isValidImage = (url) => {
     return (
       url.startsWith("https://i.ibb.co") ||
       url.startsWith("https://images.unsplash.com") ||
-      url.startsWith("https://randomuser.me")
+      url.startsWith("https://randomuser.me") ||
+      url.startsWith("https://via.placeholder.com")
     );
   };
 
-  // 🔥 real-time validation state
   const imageError =
     image && !isValidImage(image)
       ? "Use a valid image URL (i.ibb.co / Unsplash)"
       : "";
 
+  // 🔐 Email/Password Register
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -46,20 +47,42 @@ export default function Register() {
     try {
       setLoading(true);
 
-      await login(email, password);
+      // 1️⃣ Create user
+      const result = await register(email, password);
+      const user = result.user;
 
-      updateUser(
+      // 2️⃣ Update profile safely
+      await updateUser(
         name || "Anonymous",
         image && isValidImage(image)
           ? image
           : "https://i.pravatar.cc/150"
       );
 
-      toast.success("Registration successful 🎉");
-      router.push("/profile");
+      toast.success("Account created successfully 🎉");
 
+      router.push("/profile");
     } catch (err) {
-      toast.error("Registration failed");
+      console.error(err);
+      toast.error(err?.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔵 Google Signup
+  const handleGoogleSignup = async () => {
+    try {
+      setLoading(true);
+
+      await googleLogin();
+
+      toast.success("Google signup successful 🎉");
+
+      router.push("/profile");
+    } catch (err) {
+      console.error(err);
+      toast.error("Google signup failed");
     } finally {
       setLoading(false);
     }
@@ -67,7 +90,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="card w-full max-w-md bg-base-100 shadow-xl p-4 rounded-lg">
+      <div className="card w-full max-w-md bg-base-100 shadow-xl p-6 rounded-lg">
         <div className="card-body">
 
           <h2 className="text-2xl font-bold text-center">
@@ -78,7 +101,7 @@ export default function Register() {
             Join SkillSphere and start learning today
           </p>
 
-          {/* 🔥 Image Preview */}
+          {/* Image Preview */}
           <div className="flex justify-center mt-3">
             <Image
               src={
@@ -97,35 +120,34 @@ export default function Register() {
 
             {/* Name */}
             <input
-              className="input input-bordered w-full p-2 rounded-full outline-none focus:ring-2"
+              className="input input-bordered w-full p-2 rounded-full"
               placeholder="Full Name"
-              required
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
             />
 
             {/* Email */}
             <input
               type="email"
-              className="input input-bordered w-full p-2 rounded-full outline-none focus:ring-2"
+              className="input input-bordered w-full p-2 rounded-full"
               placeholder="Email"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
 
-            {/* Image URL */}
+            {/* Image */}
             <div>
               <input
-                className={`input input-bordered w-full p-2 rounded-full outline-none focus:ring-2 ${
+                className={`input input-bordered w-full p-2 rounded-full ${
                   imageError ? "border-red-500" : ""
                 }`}
-                placeholder="Profile Image URL (i.ibb.co / Unsplash)"
+                placeholder="Profile Image URL"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               />
 
-              {/* 🔥 Live Error */}
               {imageError && (
                 <p className="text-red-500 text-xs mt-1">
                   {imageError}
@@ -136,28 +158,31 @@ export default function Register() {
             {/* Password */}
             <input
               type="password"
-              className="input input-bordered w-full p-2 rounded-full outline-none focus:ring-2"
+              className="input input-bordered w-full p-2 rounded-full"
               placeholder="Password"
-              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
 
-            {/* Button */}
+            {/* Register Button */}
             <button
               type="submit"
-              className="btn btn-primary w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2"
               disabled={loading}
+              className="btn bg-blue-600 hover:bg-blue-700 text-white w-full rounded-full"
             >
               {loading ? "Creating account..." : "Register"}
             </button>
 
-            <div className="divider text-center">OR</div>
+            {/* Divider */}
+            <div className="divider">OR</div>
 
+            {/* Google */}
             <button
               type="button"
-              onClick={() => toast("Google signup coming soon")}
-              className="btn w-full border"
+              onClick={handleGoogleSignup}
+              disabled={loading}
+              className="btn w-full border rounded-full"
             >
               Continue with Google
             </button>

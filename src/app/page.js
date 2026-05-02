@@ -3,16 +3,35 @@ import CourseCard from "@/components/CourseCard";
 import coursesData from "@/data/courses.json";
 import Image from "next/image";
 
-// Fake Instructors Data
+// ✅ Stable avatar images (replaced pravatar.cc)
 const instructors = [
-  { id: 1, name: "John Doe", role: "Web Dev Expert", img: "https://randomuser.me/api/portraits/men/1.jpg" },
-  { id: 2, name: "Sarah Smith", role: "UI/UX Designer", img: "https://randomuser.me/api/portraits/women/2.jpg" },
-  { id: 3, name: "Mike Johnson", role: "Marketing Expert", img: "https://randomuser.me/api/portraits/men/3.jpg" },
-  { id: 4, name: "Lisa Brown", role: "Graphic Designer", img: "https://randomuser.me/api/portraits/women/4.jpg" },
+  {
+    id: 1,
+    name: "John Doe",
+    role: "Web Dev Expert",
+    img: "https://images.unsplash.com/photo-1584999734482-0361aecad844?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZmlsZSUyMGZhY2UlMjBwaG90b3xlbnwwfHwwfHx8MA%3D%3D",
+  },
+  {
+    id: 2,
+    name: "Sarah Smith",
+    role: "UI/UX Designer",
+    img: "https://images.unsplash.com/photo-1727292778959-ed3628286b98?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjR8fHByb2ZmZXNpb25hbHxlbnwwfHwwfHx8MA%3D%3D",
+  },
+  {
+    id: 3,
+    name: "Mike Johnson",
+    role: "Marketing Expert",
+    img: "https://images.unsplash.com/photo-1724654814389-0c9f67517cc3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8SVQlMjB0ZWFjaGVyfGVufDB8fDB8fHww",
+  },
+  {
+    id: 4,
+    name: "Lisa Brown",
+    role: "Graphic Designer",
+    img: "https://images.unsplash.com/photo-1573496800808-56566a492b63?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fElUJTIwdGVhY2hlcnxlbnwwfHwwfHx8MA%3D%3D",
+  },
 ];
 
 export default function Home() {
-  
   const sortedCourses = [...coursesData].sort((a, b) => b.rating - a.rating);
 
   const popularCourses = sortedCourses.slice(0, 3);
@@ -20,14 +39,13 @@ export default function Home() {
 
   return (
     <div>
+      {/* 🎥 Hero */}
       <HeroSlider />
 
-      {/* Popular Courses */}
+      {/* 🔥 Popular Courses */}
       <section className="py-16 container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-dark">
-            Popular Courses
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold">Popular Courses</h2>
           <p className="text-gray-500 mt-2">
             Top rated courses loved by students
           </p>
@@ -40,11 +58,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trending Courses */}
-      <section className="py-16 bg-primary/5">
+      {/* 🚀 Trending */}
+      <section className="py-16 bg-primary/5 dark:bg-white/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-dark">
+            <h2 className="text-3xl md:text-4xl font-bold">
               Trending New Releases
             </h2>
             <p className="text-gray-500 mt-2">
@@ -60,64 +78,70 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Top Instructors */}
+      {/* 👨‍🏫 Instructors */}
       <section className="py-16 container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-dark">
-            Top Instructors
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold">Top Instructors</h2>
           <p className="text-gray-500 mt-2">
-            Learn from industry professional mentors
+            Learn from industry professionals
           </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {instructors.map((ins) => (
-            <div key={ins.id} className="text-center card-hover p-4 rounded-lg shadow-md">
+            <div
+              key={ins.id}
+              className="text-center p-5 rounded-2xl backdrop-blur-lg bg-white/20 dark:bg-white/5 border border-white/20 shadow-lg hover:scale-105 transition"
+            >
               <Image
                 src={ins.img}
                 alt={ins.name}
                 width={96}
                 height={96}
-                className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-primary/20"
+                className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-primary/30"
               />
-              <h4 className="font-bold mt-3">{ins.name}</h4>
+
+              <h4 className="font-bold mt-4">{ins.name}</h4>
               <p className="text-gray-500 text-sm">{ins.role}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Learning Tips Section */}
-      <section className="py-16 bg-secondary/5">
+      {/* 💡 Learning Tips */}
+      <section className="py-16 bg-secondary/5 dark:bg-white/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-[clamp(1.8rem,3vw,2.5rem)] font-bold text-dark">
+            <h2 className="text-3xl md:text-4xl font-bold">
               Learning Tips
             </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-lg card-hover text-center">
-              <h3 className="text-xl font-bold mb-3">Stay Consistent</h3>
-              <p className="text-gray-600">
-                Study daily for small sessions rather than long occasional sessions.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-lg card-hover text-center">
-              <h3 className="text-xl font-bold mb-3">Practice Project Based</h3>
-              <p className="text-gray-600">
-                Build real projects while learning to master skills faster.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-lg card-hover text-center">
-              <h3 className="text-xl font-bold mb-3">Time Management</h3>
-              <p className="text-gray-600">
-                Make a routine and follow it strictly for best results.
-              </p>
-            </div>
+            {[
+              {
+                title: "Stay Consistent",
+                desc: "Study daily with small sessions instead of long irregular ones.",
+              },
+              {
+                title: "Practice Projects",
+                desc: "Build real-world projects to master your skills faster.",
+              },
+              {
+                title: "Time Management",
+                desc: "Plan your study routine and follow it strictly.",
+              },
+            ].map((tip, i) => (
+              <div
+                key={i}
+                className="p-6 rounded-2xl backdrop-blur-lg bg-white/20 dark:bg-white/5 border border-white/20 shadow-lg text-center hover:scale-105 transition"
+              >
+                <h3 className="text-xl font-bold mb-3">{tip.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {tip.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

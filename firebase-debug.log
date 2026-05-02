@@ -1,0 +1,70 @@
+[debug] [2026-05-02T15:01:45.716Z] ----------------------------------------------------------------------
+[debug] [2026-05-02T15:01:45.718Z] Command:       C:\nvm4w\nodejs\node.exe C:\nvm4w\nodejs\node_modules\firebase-tools\lib\bin\firebase.js login --no-localhost
+[debug] [2026-05-02T15:01:45.718Z] CLI Version:   15.16.0
+[debug] [2026-05-02T15:01:45.718Z] Platform:      win32
+[debug] [2026-05-02T15:01:45.718Z] Node Version:  v24.12.0
+[debug] [2026-05-02T15:01:45.718Z] Time:          Sat May 02 2026 23:01:45 GMT+0800 (China Standard Time)
+[debug] [2026-05-02T15:01:45.718Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-05-02T15:01:45.720Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[info] i  The Firebase CLI’s MCP server feature can optionally make use of Gemini in Firebase. Learn more about Gemini in Firebase and how it uses your data: https://firebase.google.com/docs/gemini-in-firebase#how-gemini-in-firebase-uses-your-data 
+[info] 
+[info] i  Firebase optionally collects CLI and Emulator Suite usage and error reporting information to help improve our products. Data is collected in accordance with Google's privacy policy (https://policies.google.com/privacy) and is not used to identify you. 
+[info] 
+[info] i  To change your preferences at any time, run `firebase logout` and `firebase login` again. 
+[debug] [2026-05-02T15:01:50.498Z] >>> [apiv2][query] POST https://auth.firebase.tools/attest [none]
+[debug] [2026-05-02T15:01:50.499Z] >>> [apiv2][body] POST https://auth.firebase.tools/attest {"session_id":"9d8396fc-88da-4e78-8967-3ec423374667"}
+[debug] [2026-05-02T15:01:50.560Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-05-02T15:01:50.560Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-05-02T15:01:52.792Z] <<< [apiv2][status] POST https://auth.firebase.tools/attest 200
+[debug] [2026-05-02T15:01:52.792Z] <<< [apiv2][body] POST https://auth.firebase.tools/attest {"token":"IzCQ977fJnhcAfSWb5E9VpKnbaTAxAH8zdjgaMsJz1s"}
+[info] 
+[info] To sign in to the Firebase CLI:
+[info] 
+[info] 1. Take note of your session ID:
+[info] 
+[info]    9D839
+[info] 
+[info] 2. Visit the URL below on any device and follow the instructions to get your code:
+[info] 
+[info]    https://auth.firebase.tools/login?code_challenge=RAaNhkd6I-JJAkeoImVd_8f42trBPBP09_5GynZ2wOE&session=9d8396fc-88da-4e78-8967-3ec423374667&attest=IzCQ977fJnhcAfSWb5E9VpKnbaTAxAH8zdjgaMsJz1s
+[info] 
+[info] 3. Paste or enter the authorization code below once you have it:
+[info] 
+[debug] [2026-05-02T15:06:23.196Z] >>> [apiv2][query] POST https://accounts.google.com/o/oauth2/token [none]
+[debug] [2026-05-02T15:06:23.197Z] >>> [apiv2][body] POST https://accounts.google.com/o/oauth2/token [omitted]
+[debug] [2026-05-02T15:06:44.539Z] *** [apiv2] error from fetch(https://accounts.google.com/o/oauth2/token, {"headers":{},"method":"POST","body":{"_overheadLength":655,"_valueLength":287,"_valuesToMeasure":[],"writable":false,"readable":true,"dataSize":0,"maxDataSize":2097152,"pauseStreams":true,"_released":true,"_streams":[],"_currentStream":null,"_insideLoop":false,"_pendingNext":false,"_boundary":"--------------------------ca90f4b16145ec02359ed259","_events":{},"_eventsCount":1}}): FetchError: request to https://accounts.google.com/o/oauth2/token failed, reason: 
+[debug] [2026-05-02T15:06:44.539Z] Token Fetch Error: FirebaseError: Failed to make request to https://accounts.google.com/o/oauth2/token
+    at RetryOperation._fn (C:\Users\rakib\AppData\Local\nvm\v24.12.0\node_modules\firebase-tools\lib\apiv2.js:282:31)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-05-02T15:06:49.548Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\rakib\AppData\Local\nvm\v24.12.0\node_modules\firebase-tools\lib\utils.js:309:49)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-05-02T15:07:06.121Z] ----------------------------------------------------------------------
+[debug] [2026-05-02T15:07:06.123Z] Command:       C:\nvm4w\nodejs\node.exe C:\nvm4w\nodejs\node_modules\firebase-tools\lib\bin\firebase.js login --no-localhost
+[debug] [2026-05-02T15:07:06.123Z] CLI Version:   15.16.0
+[debug] [2026-05-02T15:07:06.123Z] Platform:      win32
+[debug] [2026-05-02T15:07:06.123Z] Node Version:  v24.12.0
+[debug] [2026-05-02T15:07:06.123Z] Time:          Sat May 02 2026 23:07:06 GMT+0800 (China Standard Time)
+[debug] [2026-05-02T15:07:06.124Z] ----------------------------------------------------------------------
+[debug] 
+[info] i  The Firebase CLI’s MCP server feature can optionally make use of Gemini in Firebase. Learn more about Gemini in Firebase and how it uses your data: https://firebase.google.com/docs/gemini-in-firebase#how-gemini-in-firebase-uses-your-data 
+[info] 
+[info] i  Firebase optionally collects CLI and Emulator Suite usage and error reporting information to help improve our products. Data is collected in accordance with Google's privacy policy (https://policies.google.com/privacy) and is not used to identify you. 
+[info] 
+[info] i  To change your preferences at any time, run `firebase logout` and `firebase login` again. 
+[debug] [2026-05-02T15:07:08.556Z] >>> [apiv2][query] POST https://auth.firebase.tools/attest [none]
+[debug] [2026-05-02T15:07:08.556Z] >>> [apiv2][body] POST https://auth.firebase.tools/attest {"session_id":"cfc28585-b317-4cd7-8803-591ac33c86f0"}
+[debug] [2026-05-02T15:07:50.075Z] *** [apiv2] error from fetch(https://auth.firebase.tools/attest, {"headers":{},"method":"POST","body":"{\"session_id\":\"cfc28585-b317-4cd7-8803-591ac33c86f0\"}"}): FetchError: request to https://auth.firebase.tools/attest failed, reason: read ECONNRESET
+[debug] [2026-05-02T15:07:55.088Z] Error: Timed out.
+    at Timeout._onTimeout (C:\Users\rakib\AppData\Local\nvm\v24.12.0\node_modules\firebase-tools\lib\utils.js:309:49)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+[error] 
+[error] Error: An unexpected error has occurred.

@@ -3,9 +3,9 @@ import LoginForm from "./LoginForm";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="card w-full max-w-md bg-base-100 shadow-xl">
-        <div className="card-body">
+    <div className="min-h-screen flex items-center justify-center rounded-lg px-4">
+      <div className="card w-full max-w-md bg-base-100 rounded-lg shadow-xl p-6">
+        <div className="card-body  ">
 
           <h2 className="text-2xl font-bold text-center">
             Login to SkillSphere
