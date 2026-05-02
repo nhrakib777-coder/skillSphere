@@ -1,8 +1,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { AuthProvider } from "@/context/AuthContext";
-import { Toaster } from "react-hot-toast";
+import Providers from "@/components/Providers";
 
 export const metadata = {
   title: "SkillSphere",
@@ -14,8 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
 
-        {/* ✅ WRAP EVERYTHING HERE */}
-        <AuthProvider>
+        <Providers>
 
           <Navbar />
 
@@ -25,10 +23,7 @@ export default function RootLayout({ children }) {
 
           <Footer />
 
-          {/* ✅ Toast Provider */}
-          <Toaster position="top-right" />
-
-        </AuthProvider>
+        </Providers>
 
       </body>
     </html>

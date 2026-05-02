@@ -20,27 +20,47 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 👀 AUTH STATE
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      if (currentUser) {
+        setUser({
+          uid: currentUser.uid,
+          email: currentUser.email,
+          displayName: currentUser.displayName,
+          photoURL: currentUser.photoURL,
+        });
+      } else {
+        setUser(null);
+      }
+
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  const login = (email, password) =>
-    signInWithEmailAndPassword(auth, email, password);
+  // 🔐 LOGIN
+  const login = (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
-  const register = (email, password) =>
-    createUserWithEmailAndPassword(auth, email, password);
+  // 📝 REGISTER
+  const register = (email, password) => {
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
-  const googleLogin = () =>
-    signInWithPopup(auth, provider);
+  // 🔵 GOOGLE LOGIN
+  const googleLogin = () => {
+    return signInWithPopup(auth, provider);
+  };
 
-  const logout = () =>
-    signOut(auth);
+  // 🚪 LOGOUT
+  const logout = () => {
+    return signOut(auth);
+  };
 
+  // ✏️ UPDATE PROFILE (FIXED)
   const updateUser = async (name, photo) => {
     if (!auth.currentUser) return;
 
@@ -49,11 +69,12 @@ export function AuthProvider({ children }) {
       photoURL: photo,
     });
 
-    setUser({
-      ...auth.currentUser,
+    // ❗ SAFE manual update (NO spreading Firebase object)
+    setUser((prev) => ({
+      ...prev,
       displayName: name,
       photoURL: photo,
-    });
+    }));
   };
 
   return (
@@ -74,6 +95,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// 🧠 HOOK
 export function useAuth() {
   const context = useContext(AuthContext);
 

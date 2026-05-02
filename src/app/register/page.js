@@ -56,7 +56,7 @@ export default function Register() {
         name || "Anonymous",
         image && isValidImage(image)
           ? image
-          : "https://i.pravatar.cc/150"
+          : "https://ui-avatars.com/api/?name=John+Doe&size=100"
       );
 
       toast.success("Account created successfully 🎉");
@@ -107,7 +107,7 @@ export default function Register() {
               src={
                 image && isValidImage(image)
                   ? image
-                  : "https://i.pravatar.cc/100"
+                  : `https://ui-avatars.com/api/?name=${encodeURIComponent("SkillSphere User")}&background=random`
               }
               alt="Preview"
               width={80}
@@ -140,9 +140,8 @@ export default function Register() {
             {/* Image */}
             <div>
               <input
-                className={`input input-bordered w-full p-2 rounded-full ${
-                  imageError ? "border-red-500" : ""
-                }`}
+                className={`input input-bordered w-full p-2 rounded-full ${imageError ? "border-red-500" : ""
+                  }`}
                 placeholder="Profile Image URL"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
@@ -169,20 +168,20 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white w-full rounded-full"
+              className="btn bg-blue-600 hover:bg-blue-700 text-white w-full rounded-full p-2"
             >
               {loading ? "Creating account..." : "Register"}
             </button>
 
             {/* Divider */}
-            <div className="divider">OR</div>
+            <div className="divider text-center">OR</div>
 
             {/* Google */}
             <button
               type="button"
               onClick={handleGoogleSignup}
               disabled={loading}
-              className="btn w-full border rounded-full"
+              className="btn w-full   border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
             >
               Continue with Google
             </button>
