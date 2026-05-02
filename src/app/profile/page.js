@@ -51,7 +51,7 @@ export default function Profile() {
     <div className="container mx-auto px-4 py-12 max-w-4xl">
 
       {/* PROFILE CARD */}
-      <div className="card bg-base-100 shadow-xl text-center p-6 rounded-lg">
+      <div className="card bg-base-100 shadow-lg text-center p-6 rounded-lg">
 
         <Image
           src={safeImage}
@@ -99,7 +99,7 @@ export default function Profile() {
             {enrolledCourses.map((course) => (
               <div
                 key={course.id}
-                className="flex gap-4 items-center bg-white p-3 rounded-lg shadow"
+                className="flex gap-4 items-center bg-white p-3 rounded-lg shadow-sm"
               >
                 <Image
                   src={course.image}

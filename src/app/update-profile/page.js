@@ -70,7 +70,7 @@ export default function UpdateProfile() {
             alt="Preview"
             width={100}
             height={100}
-            className="rounded-full object-cover border"
+            className="rounded-full object-cover border w-[100px] h-[100px]"
           />
         </div>
 
@@ -92,7 +92,7 @@ export default function UpdateProfile() {
 
           <button
             type="submit"
-            className="btn btn-primary w-full"
+            className="btn bg-blue-600 p-2 w-full"
             disabled={saving}
           >
             {saving ? "Updating..." : "Update Profile"}
