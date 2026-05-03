@@ -2,42 +2,24 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import Loader from "./Loader";
 
-const Navbar = () => {
-  const { isLoggedIn, user, logout, loading } = useAuth();
+export default function Navbar() {
+  const { isLoggedIn, user, logout } = useAuth();
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
   const [search, setSearch] = useState("");
 
   const pathname = usePathname();
   const router = useRouter();
-  const dropdownRef = useRef(null);
-
-  // 🔥 close dropdown on outside click
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setProfileOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const isActive = (path) => pathname === path;
 
   const linkClass = (path) =>
-    `px-3 py-2 rounded-md transition ${
-      isActive(path)
-        ? "text-primary bg-primary/10 font-semibold"
-        : "hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800"
+    `block px-4 py-3 text-lg ${
+      isActive(path) ? "text-primary font-bold" : ""
     }`;
 
   const handleSearch = (e) => {
@@ -49,149 +31,138 @@ const Navbar = () => {
     setMenuOpen(false);
   };
 
-  const toggleDark = () => {
-    document.documentElement.classList.toggle("dark");
-  };
-
-  if (loading) {
-    return (
-      <div className="h-16 flex items-center justify-center">
-        <Loader />
-      </div>
-    );
-  }
-
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+    <>
+      {/* NAVBAR */}
+      <nav className="bg-white shadow sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
 
-        {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-primary">
-          SkillSphere
-        </Link>
+          {/* Logo */}
+          <Link href="/" className="text-xl font-bold text-primary">
+            SkillSphere
+          </Link>
 
-        {/* Search */}
-        <form
-          onSubmit={handleSearch}
-          className="hidden md:flex items-center w-72 px-4 py-1.5 rounded-full border bg-gray-50 dark:bg-gray-800"
-        >
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search courses..."
-            className="flex-1 bg-transparent outline-none text-sm dark:text-white"
-          />
-          <button>🔍</button>
-        </form>
-
-        {/* Links */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link href="/" className={linkClass("/")}>Home</Link>
-          <Link href="/courses" className={linkClass("/courses")}>Courses</Link>
-
-          {isLoggedIn && (
-            <Link href="/profile" className={linkClass("/profile")}>
-              Profile
-            </Link>
-          )}
-        </div>
-
-        {/* Right */}
-        <div className="flex items-center gap-3">
-
-          {/* Dark mode */}
-          <button
-            onClick={toggleDark}
-            className="px-2 py-1 border rounded-full"
+          {/* Search (always visible) */}
+          <form
+            onSubmit={handleSearch}
+            className="flex border rounded-full px-3 py-1 w-40 md:w-64"
           >
-            🌙
-          </button>
+            <input
+              suppressHydrationWarning
 
-          {/* Mobile */}
-          <button
-            className="md:hidden text-2xl"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            ☰
-          </button>
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search..."
+              className="flex-1 outline-none text-sm"
+            />
+          </form>
 
-          {/* AUTH */}
-          {isLoggedIn ? (
-            <div className="relative" ref={dropdownRef}>
+          {/* Desktop */}
+          <div className="hidden md:flex items-center gap-4">
+            <Link href="/" className={linkClass("/")}>Home</Link>
+            <Link href="/courses" className={linkClass("/courses")}>Courses</Link>
 
-              {/* Avatar */}
-              <button onClick={() => setProfileOpen(!profileOpen)}>
+            {isLoggedIn && (
+              <Link href="/profile" className={linkClass("/profile")}>
+                Profile
+              </Link>
+            )}
+
+            {isLoggedIn ? (
+              <>
                 <Image
                   src={user?.photoURL || "https://via.placeholder.com/40"}
                   alt="user"
                   width={40}
                   height={40}
-                  className="rounded-full w-10 h-10 object-cover"
+                  className="w-[40px] h-[40px] rounded-full"
                 />
-              </button>
+                <button onClick={logout} className="text-red-500">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login">Login</Link>
+                <Link href="/register" className="bg-primary text-white px-3 py-1 rounded">
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
 
-              {/* Dropdown */}
-              {profileOpen && (
-                <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 shadow-lg rounded-lg z-50">
-                  <Link
-                    href="/profile"
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    Profile
+          {/* Mobile Button */}
+          <button
+            className="md:hidden text-3xl"
+            onClick={() => setMenuOpen(true)}
+          >
+            ☰
+          </button>
+        </div>
+      </nav>
+
+      {/* 🔥 FULL SCREEN MOBILE MENU */}
+      {menuOpen && (
+        <div className="fixed inset-0 bg-black/50 z-[999]">
+
+          {/* Slide panel */}
+          <div className="fixed top-0 left-0 w-72 h-full bg-white shadow-lg p-5">
+
+            {/* Close button */}
+            <button
+              className="text-2xl mb-6"
+              onClick={() => setMenuOpen(false)}
+            >
+              ✕
+            </button>
+
+            {/* Links */}
+            <div className="space-y-3">
+              <Link href="/" onClick={() => setMenuOpen(false)} className={linkClass("/")}>
+                Home
+              </Link>
+
+              <Link href="/courses" onClick={() => setMenuOpen(false)} className={linkClass("/courses")}>
+                Courses
+              </Link>
+
+              {isLoggedIn && (
+                <Link href="/profile" onClick={() => setMenuOpen(false)}>
+                  Profile
+                </Link>
+              )}
+            </div>
+
+            {/* Auth */}
+            <div className="mt-6 border-t pt-4">
+              {isLoggedIn ? (
+                <button
+                  onClick={() => {
+                    logout();
+                    setMenuOpen(false);
+                  }}
+                  className="text-red-500"
+                >
+                  Logout
+                </button>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <Link href="/login" onClick={() => setMenuOpen(false)}>
+                    Login
                   </Link>
-
-                  <button
-                    onClick={() => {
-                      logout();
-                      setProfileOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  <Link
+                    href="/register"
+                    onClick={() => setMenuOpen(false)}
+                    className="bg-primary text-white px-3 py-2 rounded"
                   >
-                    Logout
-                  </button>
+                    Register
+                  </Link>
                 </div>
               )}
             </div>
-          ) : (
-            <div className="hidden md:flex gap-3">
-              <Link href="/login" className="px-3 py-2 hover:text-primary">
-                Login
-              </Link>
-
-              <Link
-                href="/register"
-                className="px-4 py-2 bg-primary text-white rounded-full"
-              >
-                Register
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* MOBILE MENU */}
-      {menuOpen && (
-        <div className="md:hidden p-4 space-y-4 bg-white dark:bg-gray-900">
-
-          <form onSubmit={handleSearch} className="flex border p-2 rounded-full">
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 outline-none bg-transparent"
-              placeholder="Search"
-            />
-          </form>
-
-          <Link href="/" className={linkClass("/")}>Home</Link>
-          <Link href="/courses" className={linkClass("/courses")}>Courses</Link>
-
-          {isLoggedIn && (
-            <Link href="/profile" className={linkClass("/profile")}>Profile</Link>
-          )}
+          </div>
         </div>
       )}
-    </nav>
+    </>
   );
-};
-
-export default Navbar;
+}

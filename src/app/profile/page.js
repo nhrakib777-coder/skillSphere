@@ -13,17 +13,24 @@ export default function Profile() {
   const { user } = useAuth();
   const [enrolledCourses, setEnrolledCourses] = useState([]);
 
-  // 📦 Load enrolled courses safely
+  // 🔑 user-specific key
+  const getKey = () => {
+    if (!user) return null;
+    return `enrolled_${user.email || user.uid}`;
+  };
+
+  // 📦 Load enrolled courses
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (!user) return;
 
     try {
-      const stored = JSON.parse(localStorage.getItem("enrolled")) || [];
+      const key = getKey();
+      const stored = JSON.parse(localStorage.getItem(key)) || [];
       setEnrolledCourses(stored);
     } catch (err) {
       setEnrolledCourses([]);
     }
-  }, []);
+  }, [user]);
 
   if (loading) return <Loader />;
 
@@ -35,23 +42,26 @@ export default function Profile() {
     );
   }
 
-  // 🧠 FIXED: correct Firebase/NextAuth field + cache busting
+  // 🖼️ Safe Image
   const safeImage = user?.photoURL
     ? `${user.photoURL}?t=${user.updatedAt || Date.now()}`
     : "https://i.pravatar.cc/100";
 
-  // ❌ Remove course handler
+  // ❌ Remove course
   const handleRemove = (id) => {
+    const key = getKey();
+
     const updated = enrolledCourses.filter((c) => c.id !== id);
     setEnrolledCourses(updated);
-    localStorage.setItem("enrolled", JSON.stringify(updated));
+
+    localStorage.setItem(key, JSON.stringify(updated));
     toast.success("Course removed ❌");
   };
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-5xl">
 
-      {/* 🌟 PROFILE CARD */}
+      {/* 👤 PROFILE CARD */}
       <div className="backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/20 shadow-2xl rounded-2xl p-6 text-center">
 
         <Image
@@ -68,7 +78,6 @@ export default function Profile() {
 
         <p className="text-gray-500">{user?.email}</p>
 
-        {/* INFO */}
         <div className="mt-6 text-left space-y-2 text-sm">
           <p>
             <span className="font-semibold">Name:</span>{" "}
@@ -79,7 +88,6 @@ export default function Profile() {
           </p>
         </div>
 
-        {/* UPDATE BUTTON */}
         <Link
           href="/update-profile"
           className="mt-6 inline-block w-full py-3 rounded-full bg-primary text-white hover:scale-105 transition"
@@ -95,7 +103,6 @@ export default function Profile() {
           My Enrolled Courses
         </h3>
 
-        {/* EMPTY STATE */}
         {enrolledCourses.length === 0 ? (
           <div className="text-center py-16 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl">
             <p className="text-gray-500">No courses enrolled yet 😢</p>
@@ -145,7 +152,6 @@ export default function Profile() {
           </div>
         )}
       </div>
-
     </div>
   );
 }

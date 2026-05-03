@@ -3,7 +3,7 @@ import CourseCard from "@/components/CourseCard";
 import coursesData from "@/data/courses.json";
 import Image from "next/image";
 
-// ✅ Stable avatar images (replaced pravatar.cc)
+//  Stable avatar images (replaced pravatar.cc)
 const instructors = [
   {
     id: 1,

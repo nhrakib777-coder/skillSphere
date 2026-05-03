@@ -31,7 +31,7 @@ export default function UpdateProfile() {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    // ✅ validation
+    //  validation
     if (!name.trim()) {
       return toast.error("Name cannot be empty");
     }

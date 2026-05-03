@@ -15,6 +15,7 @@ export default function LoginForm() {
   const router = useRouter();
   const redirect = "/";
 
+  // 🔐 EMAIL LOGIN
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -65,6 +66,7 @@ export default function LoginForm() {
     }
   };
 
+  // 🔥 GOOGLE LOGIN (FIXED)
   const handleGoogleLogin = async () => {
     if (loading) return;
 
@@ -76,8 +78,14 @@ export default function LoginForm() {
       toast.success("Google login successful 🎉");
 
       router.replace(redirect);
+
     } catch (err) {
       console.error("GOOGLE LOGIN ERROR:", err);
+
+      // ✅ IMPORTANT FIX (ignore this error)
+      if (err?.code === "auth/popup-closed-by-user") {
+        return;
+      }
 
       toast.error(err?.message || "Google login failed");
     } finally {
@@ -88,6 +96,7 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleLogin} className="space-y-4 mt-6">
 
+      {/* EMAIL */}
       <input
         type="email"
         placeholder="Email"
@@ -97,6 +106,7 @@ export default function LoginForm() {
         required
       />
 
+      {/* PASSWORD */}
       <input
         type="password"
         placeholder="Password"
@@ -106,6 +116,7 @@ export default function LoginForm() {
         required
       />
 
+      {/* LOGIN BUTTON */}
       <button
         type="submit"
         disabled={loading}
@@ -114,13 +125,14 @@ export default function LoginForm() {
         {loading ? "Logging in..." : "Login"}
       </button>
 
+      {/* GOOGLE LOGIN */}
       <button
         type="button"
         onClick={handleGoogleLogin}
         disabled={loading}
-        className="btn w-full   border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+        className="btn w-full border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
       >
-        Continue with Google
+        {loading ? "Please wait..." : "Continue with Google"}
       </button>
 
     </form>

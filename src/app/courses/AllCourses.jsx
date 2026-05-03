@@ -24,7 +24,7 @@ export default function AllCourses() {
         All Courses
       </h2>
 
-      {/* 🔍 Search result text */}
+      {/* Search result text */}
       {search && (
         <p className="text-center text-gray-500 mb-4">
           Showing results for:{" "}

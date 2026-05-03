@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-
 import Image from "next/image";
 
 export default function Register() {
@@ -32,7 +31,7 @@ export default function Register() {
       ? "Use a valid image URL (i.ibb.co / Unsplash)"
       : "";
 
-  // 🔐 Email/Password Register
+  // 🔐 EMAIL REGISTER
   const handleRegister = async (e) => {
     e.preventDefault();
 
@@ -47,16 +46,13 @@ export default function Register() {
     try {
       setLoading(true);
 
-      // 1️⃣ Create user
       const result = await register(email, password);
-      const user = result.user;
 
-      // 2️⃣ Update profile safely
       await updateUser(
         name || "Anonymous",
         image && isValidImage(image)
           ? image
-          : "https://ui-avatars.com/api/?name=John+Doe&size=100"
+          : "https://ui-avatars.com/api/?name=User&size=100"
       );
 
       toast.success("Account created successfully 🎉");
@@ -70,8 +66,10 @@ export default function Register() {
     }
   };
 
-  // 🔵 Google Signup
+  // 🔥 GOOGLE SIGNUP (FIXED)
   const handleGoogleSignup = async () => {
+    if (loading) return;
+
     try {
       setLoading(true);
 
@@ -80,9 +78,17 @@ export default function Register() {
       toast.success("Google signup successful 🎉");
 
       router.push("/profile");
+
     } catch (err) {
-      console.error(err);
-      toast.error("Google signup failed");
+      console.error("GOOGLE SIGNUP ERROR:", err);
+
+      // ✅ IMPORTANT FIX (ignore this)
+      if (err?.code === "auth/popup-closed-by-user") {
+        return;
+      }
+
+      toast.error(err?.message || "Google signup failed");
+
     } finally {
       setLoading(false);
     }
@@ -140,8 +146,9 @@ export default function Register() {
             {/* Image */}
             <div>
               <input
-                className={`input input-bordered w-full p-2 rounded-full ${imageError ? "border-red-500" : ""
-                  }`}
+                className={`input input-bordered w-full p-2 rounded-full ${
+                  imageError ? "border-red-500" : ""
+                }`}
                 placeholder="Profile Image URL"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
@@ -181,9 +188,9 @@ export default function Register() {
               type="button"
               onClick={handleGoogleSignup}
               disabled={loading}
-              className="btn w-full   border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              className="btn w-full border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
             >
-              Continue with Google
+              {loading ? "Please wait..." : "Continue with Google"}
             </button>
 
           </form>
