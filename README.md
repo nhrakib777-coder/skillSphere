@@ -6,8 +6,7 @@ A modern online learning platform where users can explore courses, view details,
 
 ## 🌐 Live URL
 
-👉 https://skillsphere-git-main-dragon10.vercel.app/
-
+👉 https://skillsphere-puce.vercel.app/
 ---
 
 ## 📌 Project Purpose
