@@ -6,6 +6,9 @@ import Providers from "@/components/Providers";
 export const metadata = {
   title: "SkillSphere",
   description: "Online Learning Platform",
+  icons: {
+    icon: "/fav.png",
+  },
 };
 
 export default function RootLayout({ children }) {
