@@ -1,36 +1,168 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🎓 SkillSphere
 
-## Getting Started
+A modern online learning platform where users can explore courses, view details, and manage their profile. This project is built as part of a web development assignment using Next.js and modern frontend tools.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌐 Live URL
+
+👉 https://your-live-link.vercel.app
+
+---
+
+## 📌 Project Purpose
+
+SkillSphere is designed to provide a clean and user-friendly platform where users can:
+
+* Browse different skill-based courses
+* View detailed course information
+* Login and manage their profile
+* Explore trending and popular courses
+
+---
+
+## 🚀 Features
+
+* 🔐 User Authentication (Login / Register)
+* 🔒 Protected Course Details Page
+* 🔍 Search Courses by Title
+* 👤 User Profile & Update Profile Feature
+* 🔥 Popular & Trending Courses Section
+* 🎥 Hero Slider Section
+* 📱 Fully Responsive Design (Mobile, Tablet, Desktop)
+* ⚡ Fast Performance with Next.js App Router
+* 🔔 Toast Notifications for user feedback
+* ⏳ Loader while fetching data
+* 🚫 Custom 404 Not Found Page
+
+---
+
+## 🧰 Tech Stack
+
+* ⚛️ Next.js
+* 🎨 Tailwind CSS
+* 🧩 DaisyUI
+* 🎞 Swiper
+* 🔔 react-hot-toast
+
+---
+
+## 📂 Project Structure
+
+```
+src
+ ├ app
+ │ ├ page.js
+ │ ├ layout.js
+ │ ├ not-found.js
+ │ ├ courses
+ │ │ ├ page.js
+ │ │ └ [id]
+ │ │     └ page.js
+ │ ├ login
+ │ ├ register
+ │ ├ profile
+ │ └ update-profile
+ │
+ ├ components
+ │ ├ Navbar.jsx
+ │ ├ Footer.jsx
+ │ ├ Hero.jsx
+ │ ├ CourseCard.jsx
+ │ └ Loader.jsx
+ │
+ ├ context
+ │ └ AuthContext.jsx
+ │
+ ├ data
+ │ └ courses.json
+ │
+ └ utils
+   └ protectedRoute.js
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🔐 Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses a simple client-side authentication system:
 
-## Learn More
+* Login / Logout functionality
+* User state managed via React Context API
+* Protected routes (course details page)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔍 Search Functionality
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Users can search courses by title from the **All Courses** page.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 👤 Profile Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* View user information
+* Update name and profile image
+* Dynamic UI updates
+
+---
+
+## 📦 Installation & Setup
+
+Clone the repository:
+
+```
+git clone https://github.com/your-username/skillsphere.git
+```
+
+Go to project folder:
+
+```
+cd skillsphere
+```
+
+Install dependencies:
+
+```
+npm install
+```
+
+Run development server:
+
+```
+npm run dev
+```
+
+Build for production:
+
+```
+npm run build
+```
+
+---
+
+## 🌍 Deployment
+
+This project is deployed on:
+
+* Vercel
+
+---
+
+## ⚠️ Notes
+
+* No backend is used (frontend-only project)
+* Authentication is simulated for demonstration purposes
+* Designed for academic assignment evaluation
+
+---
+
+## 👨‍💻 Author
+
+**Nur Hasan Rakib**
+
+---
+
+## 📜 License
+
+This project is for educational purposes only.
