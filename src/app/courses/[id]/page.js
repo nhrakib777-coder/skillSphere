@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useProtectedRoute } from "@/utils/protectedRoute";
 import Loader from "@/components/Loader";
 import Image from "next/image";
 import courses from "@/data/courses.json";
@@ -10,106 +9,99 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CourseDetails() {
-  const loading = useProtectedRoute();
   const { id } = useParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
 
   const [course, setCourse] = useState(null);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // 🔍 Load course
+  //  PROTECTED ROUTE: IF NOT LOGGED IN → REDIRECT TO LOGIN
+  useEffect(() => {
+    if (!isLoggedIn) {
+      toast.error("Please login to view this course");
+      router.push("/login");
+    }
+  }, [isLoggedIn, router]);
+
+  //  Load course
   useEffect(() => {
     if (!id) return;
 
     const found = courses.find((c) => c.id == id);
     setCourse(found);
+    setLoading(false);
   }, [id]);
 
-  // 🔑 user-specific key
+  //  Get enrollment key
   const getKey = () => {
     if (!user) return null;
     return `enrolled_${user.email || user.uid}`;
   };
 
-  // 🔥 Check enrollment
+  //  Check enrollment status
   useEffect(() => {
     if (!course || !user) return;
 
     try {
       const key = getKey();
-      const enrolled = JSON.parse(localStorage.getItem(key)) || [];
-
-      const exists = enrolled.some((c) => c.id === course.id);
-      setIsEnrolled(exists);
+      const enrolledList = JSON.parse(localStorage.getItem(key)) || [];
+      const alreadyEnrolled = enrolledList.some((c) => c.id === course.id);
+      setIsEnrolled(alreadyEnrolled);
     } catch (err) {
       setIsEnrolled(false);
     }
   }, [course, user]);
 
-  if (loading) return <Loader />;
+  // SHOW LOADER WHILE CHECKING
+  if (!isLoggedIn || loading) return <Loader />;
 
+  // COURSE NOT FOUND
   if (!course) {
     return (
-      <div className="text-center mt-20">
-        <h2 className="text-2xl font-bold text-red-500">
-          Course not found 😢
-        </h2>
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h2 className="text-3xl font-bold text-red-500">Course not found</h2>
       </div>
     );
   }
 
-  // 🚀 ENROLL FUNCTION (FIXED + REDIRECT)
+  //  ENROLL COURSE
   const handleEnroll = () => {
-    if (!user) {
-      toast.error("Please login first");
+    const key = getKey();
+    const enrolledList = JSON.parse(localStorage.getItem(key)) || [];
+    const alreadyExists = enrolledList.some((c) => c.id === course.id);
 
-      // 🔥 redirect to login page
-      router.push("/login");
-
+    if (alreadyExists) {
+      toast("Already enrolled!");
       return;
     }
 
-    const key = getKey();
-    const enrolled = JSON.parse(localStorage.getItem(key)) || [];
-
-    const already = enrolled.some((c) => c.id === course.id);
-
-    if (already) {
-      return toast("Already enrolled!");
-    }
-
-    const updated = [...enrolled, course];
-    localStorage.setItem(key, JSON.stringify(updated));
-
+    const updatedList = [...enrolledList, course];
+    localStorage.setItem(key, JSON.stringify(updatedList));
     setIsEnrolled(true);
-    toast.success(`Enrolled in ${course.title} 🎉`);
+    toast.success(`Successfully enrolled in ${course.title} 🎉`);
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
-
-      <div className="backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/20 shadow-2xl rounded-2xl overflow-hidden">
-
+    <div className="container mx-auto px-4 py-16 max-w-4xl">
+      <div className="bg-white shadow-2xl rounded-3xl overflow-hidden">
         {/* Course Image */}
         <Image
-          src={course.image || "https://via.placeholder.com/800x400"}
+          src={course.image}
           alt={course.title}
           width={800}
-          height={400}
-          className="w-full h-64 object-cover"
+          height={450}
+          className="w-full h-[300px] object-cover"
+          priority
         />
 
-        {/* Content */}
-        <div className="p-6 text-gray-800 dark:text-gray-200">
-
+        <div className="p-8">
           {/* Title */}
-          <h2 className="text-3xl font-bold mb-2">
-            {course.title}
-          </h2>
+          <h1 className="text-4xl font-bold text-gray-800 mb-3">{course.title}</h1>
 
           {/* Meta Info */}
-          <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400 mb-4">
+          <div className="flex flex-wrap gap-5 text-gray-500 mb-6">
             <span>👨‍🏫 {course.instructor}</span>
             <span>⏱ {course.duration}</span>
             <span>📊 {course.level}</span>
@@ -117,21 +109,17 @@ export default function CourseDetails() {
           </div>
 
           {/* Description */}
-          <p className="text-lg mb-6">
-            {course.description}
-          </p>
+          <p className="text-lg text-gray-600 mb-8">{course.description}</p>
 
           {/* Curriculum */}
-          <div>
-            <h3 className="text-xl font-semibold mb-3">
-              📚 Curriculum
-            </h3>
-
-            <ul className="space-y-2">
-              <li>✔ Introduction</li>
-              <li>✔ Core Concepts</li>
-              <li>✔ Hands-on Projects</li>
-              <li>✔ Final Assessment</li>
+          <div className="mb-10">
+            <h3 className="text-xl font-semibold mb-4">📚 Course Curriculum</h3>
+            <ul className="space-y-2 text-gray-700">
+              <li>✅ Introduction</li>
+              <li>✅ Core Fundamentals</li>
+              <li>✅ Practical Projects</li>
+              <li>✅ Quizzes & Assignments</li>
+              <li>✅ Final Certification</li>
             </ul>
           </div>
 
@@ -139,15 +127,14 @@ export default function CourseDetails() {
           <button
             onClick={handleEnroll}
             disabled={isEnrolled}
-            className={`w-full mt-8 py-3 rounded-full font-semibold transition ${
+            className={`w-full py-4 rounded-full text-lg font-semibold transition-all ${
               isEnrolled
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-primary text-white hover:scale-105 hover:shadow-lg"
+                ? "bg-green-100 text-green-700 cursor-not-allowed"
+                : "bg-primary text-white hover:scale-105 hover:shadow-xl"
             }`}
           >
-            {isEnrolled ? "Enrolled ✅" : "Enroll Now 🚀"}
+            {isEnrolled ? "✅ Already Enrolled" : "🚀 Enroll Now"}
           </button>
-
         </div>
       </div>
     </div>

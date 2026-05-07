@@ -66,11 +66,12 @@ export default function UpdateProfile() {
         {/* Preview */}
         <div className="flex justify-center mb-4">
           <Image
-            src={image || user.image || "https://via.placeholder.com/100"}
+            src={image || user?.photoURL || "https://ui-avatars.com/api/?name=User"}
             alt="Preview"
             width={100}
             height={100}
             className="rounded-full object-cover border w-[100px] h-[100px]"
+            unoptimized  // required
           />
         </div>
 

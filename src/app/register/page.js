@@ -1,10 +1,10 @@
 "use client";
+
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import Image from "next/image";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -13,196 +13,182 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { register, googleLogin, updateUser } = useAuth();
+  const { register, googleLogin } = useAuth();
   const router = useRouter();
 
-  // ✅ validate image URL
   const isValidImage = (url) => {
+    if (!url) return false;
     return (
       url.startsWith("https://i.ibb.co") ||
       url.startsWith("https://images.unsplash.com") ||
       url.startsWith("https://randomuser.me") ||
-      url.startsWith("https://via.placeholder.com")
+      url.startsWith("https://via.placeholder.com") ||
+      url.startsWith("https://ui-avatars.com")
     );
   };
 
-  const imageError =
-    image && !isValidImage(image)
-      ? "Use a valid image URL (i.ibb.co / Unsplash)"
-      : "";
+  const imageError = image && !isValidImage(image)
+    ? "Use a valid image URL"
+    : "";
 
-  // 🔐 EMAIL REGISTER
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (password.length < 6) {
-      return toast.error("Password must be at least 6 characters");
-    }
+    if (loading) return;
 
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail) {
+      toast.error("Please enter your email address");
+      return;
+    }
+    if (!name) {
+      toast.error("Please enter your full name");
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
     if (imageError) {
-      return toast.error(imageError);
+      toast.error(imageError);
+      return;
     }
 
     try {
       setLoading(true);
 
-      const result = await register(email, password);
+      const profileImage = isValidImage(image)
+        ? image
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(name || "User")}&background=random`;
 
-      await updateUser(
-        name || "Anonymous",
-        image && isValidImage(image)
-          ? image
-          : "https://ui-avatars.com/api/?name=User&size=100"
-      );
+      await register(name, trimmedEmail, password, profileImage);
 
-      toast.success("Account created successfully 🎉");
+      toast.success("Registration successful! Please login 🎉");
+      router.push("/login");
 
-      router.push("/profile");
     } catch (err) {
-      console.error(err);
-      toast.error(err?.message || "Registration failed");
+      console.error("REGISTER ERROR:", err);
+
+      let message = "Registration failed";
+      if (err.code === "auth/network-request-failed") {
+        message = "Network error! Check your internet.";
+      } else if (err.code === "auth/email-already-in-use") {
+        message = "Email already in use";
+      } else if (err.code === "auth/invalid-email") {
+        message = "Invalid email format";
+      } else if (err.code === "auth/weak-password") {
+        message = "Password must be at least 6 characters";
+      } else {
+        message = err.message || "Something went wrong";
+      }
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔥 GOOGLE SIGNUP (FIXED)
   const handleGoogleSignup = async () => {
     if (loading) return;
 
     try {
       setLoading(true);
-
       await googleLogin();
-
       toast.success("Google signup successful 🎉");
-
-      router.push("/profile");
-
+      router.push("/");
     } catch (err) {
       console.error("GOOGLE SIGNUP ERROR:", err);
-
-      // ✅ IMPORTANT FIX (ignore this)
-      if (err?.code === "auth/popup-closed-by-user") {
-        return;
+      if (err.code !== "auth/popup-closed-by-user") {
+        toast.error("Google signup failed");
       }
-
-      toast.error(err?.message || "Google signup failed");
-
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="card w-full max-w-md bg-base-100 shadow-xl p-6 rounded-lg">
-        <div className="card-body">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-50 to-purple-50">
+      <div className="w-full max-w-md bg-white shadow-2xl p-6 rounded-2xl">
+        <h2 className="text-2xl font-bold text-center text-primary">Create Account</h2>
+        <p className="text-center text-gray-500 text-sm mb-4">
+          Join SkillSphere and start learning today
+        </p>
 
-          <h2 className="text-2xl font-bold text-center">
-            Create Account
-          </h2>
+        <div className="flex justify-center mt-2">
+          <img
+            src="https://ui-avatars.com/api/?name=User&background=random"
+            alt="Profile Preview"
+            width={90}
+            height={90}
+            className="rounded-full object-cover border-2 border-primary/20"
+          />
+        </div>
 
-          <p className="text-center text-gray-500 text-sm">
-            Join SkillSphere and start learning today
-          </p>
+        <form onSubmit={handleRegister} className="space-y-4 mt-6">
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
 
-          {/* Image Preview */}
-          <div className="flex justify-center mt-3">
-            <Image
-              src={
-                image && isValidImage(image)
-                  ? image
-                  : `https://ui-avatars.com/api/?name=${encodeURIComponent("SkillSphere User")}&background=random`
-              }
-              alt="Preview"
-              width={80}
-              height={80}
-              className="rounded-full object-cover border"
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
+
+          <div>
+            <input
+              type="text"
+              placeholder="Profile Image URL (Optional)"
+              value={image}
+              onChange={(e) => setImage(e.target.value)}
+              className={`w-full p-3 rounded-full border ${imageError ? "border-red-500" : "border-gray-300"} focus:outline-none focus:ring-2 focus:ring-primary`}
             />
+            {imageError && (
+              <p className="text-red-500 text-xs mt-1">{imageError}</p>
+            )}
           </div>
 
-          <form onSubmit={handleRegister} className="space-y-3 mt-4">
+          <input
+            type="password"
+            placeholder="Password (min 6 chars)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
 
-            {/* Name */}
-            <input
-              className="input input-bordered w-full p-2 rounded-full"
-              placeholder="Full Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full p-3 rounded-full bg-primary text-white hover:scale-105 transition-all disabled:opacity-70"
+          >
+            {loading ? "Creating Account..." : "Register"}
+          </button>
 
-            {/* Email */}
-            <input
-              type="email"
-              className="input input-bordered w-full p-2 rounded-full"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+          <div className="divider text-sm text-gray-500">OR</div>
 
-            {/* Image */}
-            <div>
-              <input
-                className={`input input-bordered w-full p-2 rounded-full ${
-                  imageError ? "border-red-500" : ""
-                }`}
-                placeholder="Profile Image URL"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-              />
+          <button
+            type="button"
+            onClick={handleGoogleSignup}
+            disabled={loading}
+            className="w-full p-3 rounded-full border border-gray-300 hover:bg-gray-100 transition-all disabled:opacity-70"
+          >
+            {loading ? "Please wait..." : "Continue with Google"}
+          </button>
+        </form>
 
-              {imageError && (
-                <p className="text-red-500 text-xs mt-1">
-                  {imageError}
-                </p>
-              )}
-            </div>
-
-            {/* Password */}
-            <input
-              type="password"
-              className="input input-bordered w-full p-2 rounded-full"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-
-            {/* Register Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn bg-blue-600 hover:bg-blue-700 text-white w-full rounded-full p-2"
-            >
-              {loading ? "Creating account..." : "Register"}
-            </button>
-
-            {/* Divider */}
-            <div className="divider text-center">OR</div>
-
-            {/* Google */}
-            <button
-              type="button"
-              onClick={handleGoogleSignup}
-              disabled={loading}
-              className="btn w-full border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-            >
-              {loading ? "Please wait..." : "Continue with Google"}
-            </button>
-
-          </form>
-
-          <p className="text-center mt-4 text-sm">
-            Already have an account?{" "}
-            <Link href="/login" className="text-primary font-medium">
-              Login
-            </Link>
-          </p>
-
-        </div>
+        <p className="text-center mt-4 text-sm">
+          Already have an account?{" "}
+          <Link href="/login" className="text-primary font-medium">Login</Link>
+        </p>
       </div>
     </div>
   );

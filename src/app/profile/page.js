@@ -5,7 +5,6 @@ import { useProtectedRoute } from "@/utils/protectedRoute";
 import Loader from "@/components/Loader";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
-import Image from "next/image";
 import { toast } from "react-hot-toast";
 
 export default function Profile() {
@@ -13,13 +12,13 @@ export default function Profile() {
   const { user } = useAuth();
   const [enrolledCourses, setEnrolledCourses] = useState([]);
 
-  // 🔑 user-specific key
+  //  user-specific key
   const getKey = () => {
     if (!user) return null;
     return `enrolled_${user.email || user.uid}`;
   };
 
-  // 📦 Load enrolled courses
+  //  Load enrolled courses
   useEffect(() => {
     if (!user) return;
 
@@ -42,18 +41,14 @@ export default function Profile() {
     );
   }
 
-  // 🖼️ Safe Image
-  const safeImage = user?.photoURL
-    ? `${user.photoURL}?t=${user.updatedAt || Date.now()}`
-    : "https://i.pravatar.cc/100";
+  //profile image fallback
+  const profileImage = user?.photoURL || "https://ui-avatars.com/api/?name=User&background=random";
 
-  // ❌ Remove course
+  // Remove course
   const handleRemove = (id) => {
     const key = getKey();
-
     const updated = enrolledCourses.filter((c) => c.id !== id);
     setEnrolledCourses(updated);
-
     localStorage.setItem(key, JSON.stringify(updated));
     toast.success("Course removed ❌");
   };
@@ -64,16 +59,15 @@ export default function Profile() {
       {/* 👤 PROFILE CARD */}
       <div className="backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/20 shadow-2xl rounded-2xl p-6 text-center">
 
-        <Image
-          src={safeImage}
+        {/* USE NORMAL img*/}
+        <img
+          src={profileImage}
           alt="Profile"
-          width={100}
-          height={100}
           className="w-24 h-24 rounded-full mx-auto border-4 border-primary/30 object-cover"
         />
 
         <h2 className="text-2xl font-bold mt-4">
-          {user?.displayName || user?.name || "Anonymous"}
+          {user?.displayName || "Anonymous"}
         </h2>
 
         <p className="text-gray-500">{user?.email}</p>
@@ -81,7 +75,7 @@ export default function Profile() {
         <div className="mt-6 text-left space-y-2 text-sm">
           <p>
             <span className="font-semibold">Name:</span>{" "}
-            {user?.displayName || user?.name || "N/A"}
+            {user?.displayName || "N/A"}
           </p>
           <p>
             <span className="font-semibold">Email:</span> {user?.email}
@@ -96,12 +90,9 @@ export default function Profile() {
         </Link>
       </div>
 
-      {/* 📚 ENROLLED COURSES */}
+      {/*  ENROLLED COURSES */}
       <div className="mt-12">
-
-        <h3 className="text-2xl font-bold mb-6">
-          My Enrolled Courses
-        </h3>
+        <h3 className="text-2xl font-bold mb-6">My Enrolled Courses</h3>
 
         {enrolledCourses.length === 0 ? (
           <div className="text-center py-16 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl">
@@ -115,28 +106,21 @@ export default function Profile() {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-6">
-
             {enrolledCourses.map((course) => (
               <div
                 key={course.id}
                 className="flex gap-4 items-center p-4 rounded-2xl backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/20 shadow-lg hover:scale-[1.02] transition"
               >
-
-                <Image
+                {/*  COURSE IMAGE */}
+                <img
                   src={course.image || "https://via.placeholder.com/80"}
                   alt={course.title}
-                  width={80}
-                  height={60}
                   className="rounded-xl object-cover w-20 h-16"
                 />
 
                 <div className="flex-1">
-                  <p className="font-semibold text-sm">
-                    {course.title}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {course.instructor}
-                  </p>
+                  <p className="font-semibold text-sm">{course.title}</p>
+                  <p className="text-xs text-gray-500">{course.instructor}</p>
                 </div>
 
                 <button
@@ -145,10 +129,8 @@ export default function Profile() {
                 >
                   Remove
                 </button>
-
               </div>
             ))}
-
           </div>
         )}
       </div>

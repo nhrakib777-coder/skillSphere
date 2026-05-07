@@ -1,140 +1,109 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { useAuth } from "@/context/AuthContext";
 
 export default function LoginForm() {
-  const { login, googleLogin } = useAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ✅ GET GOOGLE LOGIN FUNCTION FROM AUTH CONTEXT
+  const { login, googleLogin } = useAuth();
   const router = useRouter();
-  const redirect = "/";
 
-  // 🔐 EMAIL LOGIN
+  // Email/Password Login
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (loading) return;
-
     if (!email || !password) {
-      toast.error("Email and password required");
+      toast.error("Please fill all fields");
       return;
     }
 
     try {
       setLoading(true);
-
-      await login(email.trim(), password);
-
-      toast.success("Login successful 🎉");
-
-      router.replace(redirect);
+      await login(email, password);
+      toast.success("Login successful!");
+      router.push("/");
     } catch (err) {
-      console.error("LOGIN ERROR:", err);
-
-      const code = err?.code || "";
-      let message = "Login failed";
-
-      switch (code) {
-        case "auth/invalid-credential":
-          message = "Invalid email or password";
-          break;
-        case "auth/user-not-found":
-          message = "User not found";
-          break;
-        case "auth/wrong-password":
-          message = "Wrong password";
-          break;
-        case "auth/too-many-requests":
-          message = "Too many attempts. Try later.";
-          break;
-        case "auth/invalid-email":
-          message = "Invalid email format";
-          break;
-        default:
-          message = err?.message || "Login failed";
-      }
-
-      toast.error(message);
+      toast.error(err.message || "Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔥 GOOGLE LOGIN (FIXED)
+  // GOOGLE LOGIN HANDLER
   const handleGoogleLogin = async () => {
-    if (loading) return;
-
     try {
       setLoading(true);
-
       await googleLogin();
-
-      toast.success("Google login successful 🎉");
-
-      router.replace(redirect);
-
+      toast.success("Google login successful! 🎉");
+      router.push("/");
     } catch (err) {
-      console.error("GOOGLE LOGIN ERROR:", err);
-
-      // ✅ IMPORTANT FIX (ignore this error)
-      if (err?.code === "auth/popup-closed-by-user") {
-        return;
-      }
-
-      toast.error(err?.message || "Google login failed");
+      toast.error("Google login failed");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-4 mt-6">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-50 to-purple-50">
+      <div className="w-full max-w-md bg-white shadow-2xl p-6 rounded-2xl">
+        <h2 className="text-2xl font-bold text-center text-primary mb-2">Welcome Back</h2>
+        <p className="text-center text-gray-500 text-sm mb-6">Login to your account</p>
 
-      {/* EMAIL */}
-      <input
-        type="email"
-        placeholder="Email"
-        className="input input-bordered w-full p-2 rounded-full"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
+        <form onSubmit={handleLogin} className="space-y-4">
+          {/* EMAIL */}
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
 
-      {/* PASSWORD */}
-      <input
-        type="password"
-        placeholder="Password"
-        className="input input-bordered w-full p-2 rounded-full"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
+          {/* PASSWORD */}
+          <input
+            type="password"
+            placeholder="Enter your password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
 
-      {/* LOGIN BUTTON */}
-      <button
-        type="submit"
-        disabled={loading}
-        className="btn bg-blue-600 text-white w-full p-2 rounded-full"
-      >
-        {loading ? "Logging in..." : "Login"}
-      </button>
+          {/* LOGIN BUTTON */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full p-3 rounded-full bg-primary text-white hover:scale-105 transition-all disabled:opacity-70"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
 
-      {/* GOOGLE LOGIN */}
-      <button
-        type="button"
-        onClick={handleGoogleLogin}
-        disabled={loading}
-        className="btn w-full border border-gray-300 dark:border-gray-600 rounded-full flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-      >
-        {loading ? "Please wait..." : "Continue with Google"}
-      </button>
+        {/*  DIVIDER */}
+        <div className="flex items-center gap-2 my-4">
+          <div className="flex-1 h-[1px] bg-gray-300"></div>
+          <p className="text-sm text-gray-500">or</p>
+          <div className="flex-1 h-[1px] bg-gray-300"></div>
+        </div>
 
-    </form>
+        {/*  GOOGLE LOGIN BUTTON  */}
+        <button
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          className="w-full p-3 rounded-full border border-gray-400 bg-white text-gray-800 hover:bg-gray-100 transition-all font-medium disabled:opacity-70"
+        >
+          Continue with Google
+        </button>
+      </div>
+    </div>
   );
 }

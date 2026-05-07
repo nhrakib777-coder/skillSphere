@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -20,7 +26,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 👀 AUTH STATE
+  //  Auth State Listener (RELIABLE — DO NOT MANUALLY SET USER ELSEWHERE)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -33,34 +39,75 @@ export function AuthProvider({ children }) {
       } else {
         setUser(null);
       }
-
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // 🔐 LOGIN
-  const login = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  //  LOGIN
+  const login = async (email, password) => {
+    setLoading(true);
+    try {
+      return await signInWithEmailAndPassword(auth, email.trim(), password);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // 📝 REGISTER
-  const register = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  //  REGISTER 
+  const register = async (name, email, password, photoURL) => {
+    setLoading(true);
+    try {
+      // Create user
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
+
+      const user = userCredential.user;
+
+      // Update profile
+      await updateProfile(user, {
+        displayName: name,
+        photoURL: photoURL,
+      });
+
+      //  FORCE LOGOUT 
+      await signOut(auth);
+      setUser(null);
+
+      return userCredential;
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // 🔵 GOOGLE LOGIN
-  const googleLogin = () => {
-    return signInWithPopup(auth, provider);
+  //  GOOGLE LOGIN
+  const googleLogin = async () => {
+    setLoading(true);
+    try {
+      return await signInWithPopup(auth, provider);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // 🚪 LOGOUT
-  const logout = () => {
-    return signOut(auth);
+  //  LOGOUT
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await signOut(auth);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ✏️ UPDATE PROFILE (FIXED)
+  //  UPDATE USER PROFILE
   const updateUser = async (name, photo) => {
     if (!auth.currentUser) return;
 
@@ -69,7 +116,6 @@ export function AuthProvider({ children }) {
       photoURL: photo,
     });
 
-    // ❗ SAFE manual update (NO spreading Firebase object)
     setUser((prev) => ({
       ...prev,
       displayName: name,
@@ -77,31 +123,29 @@ export function AuthProvider({ children }) {
     }));
   };
 
+  const authInfo = {
+    user,
+    loading,
+    login,
+    register,
+    googleLogin,
+    logout,
+    updateUser,
+    isLoggedIn: !!user,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        login,
-        register,
-        googleLogin,
-        logout,
-        updateUser,
-        isLoggedIn: !!user && !loading,
-      }}
-    >
+    <AuthContext.Provider value={authInfo}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-// 🧠 HOOK
+//  Custom Hook
 export function useAuth() {
   const context = useContext(AuthContext);
-
   if (!context) {
     throw new Error("useAuth must be used inside AuthProvider");
   }
-
   return context;
 }
