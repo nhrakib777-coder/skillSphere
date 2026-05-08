@@ -173,7 +173,7 @@ export default function Register() {
             {loading ? "Creating Account..." : "Register"}
           </button>
 
-          <div className="divider text-sm text-gray-500">OR</div>
+          <div className="divider text-sm text-gray-500 text-center">OR</div>
 
           <button
             type="button"

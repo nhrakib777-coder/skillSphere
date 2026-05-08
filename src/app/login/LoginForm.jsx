@@ -51,7 +51,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className=" flex items-center justify-center px-4 bg-gradient-to-br from-base-50 to-purple-50">
       <div className="w-full max-w-md bg-white shadow-2xl p-6 rounded-2xl">
         <h2 className="text-2xl font-bold text-center text-primary mb-2">Welcome Back</h2>
         <p className="text-center text-gray-500 text-sm mb-6">Login to your account</p>

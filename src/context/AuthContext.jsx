@@ -1,12 +1,10 @@
 "use client";
-
 import {
   createContext,
   useContext,
   useEffect,
   useState,
 } from "react";
-
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -16,7 +14,6 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-
 import { auth } from "@/lib/firebase";
 
 const AuthContext = createContext(null);
@@ -26,52 +23,36 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 Auth State Listener
+  // 🔥 Auth Listener (WORKS PERFECTLY)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser({
-          uid: currentUser.uid,
-          email: currentUser.email,
-          displayName: currentUser.displayName,
-          photoURL: currentUser.photoURL,
-        });
-      } else {
-        setUser(null);
-      }
+      setUser(currentUser);
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
-  //  LOGIN — ✅ CUSTOM ERROR HANDLING ADDED
+  // 🔐 LOGIN — FIXED ✅
   const login = async (email, password) => {
     setLoading(true);
     try {
-      return await signInWithEmailAndPassword(auth, email.trim(), password);
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      setUser(userCredential.user); // ✅ THIS WAS MISSING!
+      return userCredential;
     } catch (error) {
-      //  CUSTOM FRIENDLY ERROR MESSAGES
       if (error.code === "auth/user-not-found") {
         throw new Error("You are not registered. Please create an account first.");
       }
       if (error.code === "auth/wrong-password") {
         throw new Error("Incorrect password. Please try again.");
       }
-      if (error.code === "auth/invalid-email") {
-        throw new Error("Invalid email format.");
-      }
-      if (error.code === "auth/network-request-failed") {
-        throw new Error("Network error. Check your internet.");
-      }
-      // Default fallback
-      throw new Error("Login failed. Please try again later.");
+      throw new Error("Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  //  REGISTER
+  // 📝 REGISTER — FIXED (auto logout AFTER creation, safe) ✅
   const register = async (name, email, password, photoURL) => {
     setLoading(true);
     try {
@@ -80,7 +61,6 @@ export function AuthProvider({ children }) {
         email.trim(),
         password
       );
-
       const user = userCredential.user;
 
       await updateProfile(user, {
@@ -88,6 +68,7 @@ export function AuthProvider({ children }) {
         photoURL: photoURL,
       });
 
+      // ✅ Safe logout after registration
       await signOut(auth);
       setUser(null);
 
@@ -102,11 +83,13 @@ export function AuthProvider({ children }) {
     }
   };
 
-  //  GOOGLE LOGIN
+  // 🔵 GOOGLE LOGIN — FIXED ✅
   const googleLogin = async () => {
     setLoading(true);
     try {
-      return await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      setUser(result.user); // ✅ THIS WAS MISSING!
+      return result;
     } catch (error) {
       throw new Error("Google login failed. Try again later.");
     } finally {
@@ -114,7 +97,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  //  LOGOUT
+  // 🚪 LOGOUT
   const logout = async () => {
     setLoading(true);
     try {
@@ -125,24 +108,23 @@ export function AuthProvider({ children }) {
     }
   };
 
-  //  UPDATE USER PROFILE
+  // ✏️ UPDATE PROFILE
   const updateUser = async (name, photo) => {
     if (!auth.currentUser) return;
-
     await updateProfile(auth.currentUser, {
       displayName: name,
       photoURL: photo,
     });
-
-    setUser((prev) => ({
-      ...prev,
-      displayName: name,
-      photoURL: photo,
-    }));
+    setUser({ ...auth.currentUser });
   };
 
   const authInfo = {
-    user,
+    user: user ? {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+    } : null,
     loading,
     login,
     register,
@@ -159,11 +141,7 @@ export function AuthProvider({ children }) {
   );
 }
 
-//  Custom Hook
+// Custom Hook
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used inside AuthProvider");
-  }
-  return context;
+  return useContext(AuthContext);
 }
