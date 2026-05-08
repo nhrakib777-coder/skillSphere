@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  //  Auth State Listener (RELIABLE — DO NOT MANUALLY SET USER ELSEWHERE)
+  // 🔥 Auth State Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -45,21 +45,36 @@ export function AuthProvider({ children }) {
     return () => unsubscribe();
   }, []);
 
-  //  LOGIN
+  //  LOGIN — ✅ CUSTOM ERROR HANDLING ADDED
   const login = async (email, password) => {
     setLoading(true);
     try {
       return await signInWithEmailAndPassword(auth, email.trim(), password);
+    } catch (error) {
+      //  CUSTOM FRIENDLY ERROR MESSAGES
+      if (error.code === "auth/user-not-found") {
+        throw new Error("You are not registered. Please create an account first.");
+      }
+      if (error.code === "auth/wrong-password") {
+        throw new Error("Incorrect password. Please try again.");
+      }
+      if (error.code === "auth/invalid-email") {
+        throw new Error("Invalid email format.");
+      }
+      if (error.code === "auth/network-request-failed") {
+        throw new Error("Network error. Check your internet.");
+      }
+      // Default fallback
+      throw new Error("Login failed. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  //  REGISTER 
+  //  REGISTER
   const register = async (name, email, password, photoURL) => {
     setLoading(true);
     try {
-      // Create user
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email.trim(),
@@ -68,18 +83,19 @@ export function AuthProvider({ children }) {
 
       const user = userCredential.user;
 
-      // Update profile
       await updateProfile(user, {
         displayName: name,
         photoURL: photoURL,
       });
 
-      //  FORCE LOGOUT 
       await signOut(auth);
       setUser(null);
 
       return userCredential;
     } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        throw new Error("Email is already registered.");
+      }
       throw error;
     } finally {
       setLoading(false);
@@ -91,6 +107,8 @@ export function AuthProvider({ children }) {
     setLoading(true);
     try {
       return await signInWithPopup(auth, provider);
+    } catch (error) {
+      throw new Error("Google login failed. Try again later.");
     } finally {
       setLoading(false);
     }
