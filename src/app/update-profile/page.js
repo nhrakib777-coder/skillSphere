@@ -57,7 +57,7 @@ export default function UpdateProfile() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-md">
 
-      <div className="card bg-base-100 shadow-xl p-6">
+      <div className="card bg-base-100 shadow-xl p-6 rounded-2xl">
 
         <h2 className="text-2xl font-bold text-center mb-4">
           Update Profile
@@ -78,14 +78,14 @@ export default function UpdateProfile() {
         <form onSubmit={handleUpdate} className="space-y-4">
 
           <input
-            className="input input-bordered w-full"
+            className="input input-bordered w-full p-2 rounded-full outline-none focus:ring-2 focus:ring-primary"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Full Name"
           />
 
           <input
-            className="input input-bordered w-full"
+            className="input input-bordered w-full p-2 rounded-full outline-none focus:ring-2 focus:ring-primary"
             value={image}
             onChange={(e) => setImage(e.target.value)}
             placeholder="Image URL"
@@ -93,7 +93,7 @@ export default function UpdateProfile() {
 
           <button
             type="submit"
-            className="btn bg-blue-600 p-2 w-full"
+            className="btn bg-blue-600 p-2 w-full rounded-full text-white"
             disabled={saving}
           >
             {saving ? "Updating..." : "Update Profile"}

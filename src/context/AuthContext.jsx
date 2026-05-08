@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useRouter } from "next/navigation";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -22,8 +23,9 @@ const provider = new GoogleAuthProvider();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  // 🔥 Auth Listener (WORKS PERFECTLY)
+  // 🔥 Auth Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -32,12 +34,12 @@ export function AuthProvider({ children }) {
     return () => unsubscribe();
   }, []);
 
-  // 🔐 LOGIN — FIXED ✅
+  // 🔐 LOGIN
   const login = async (email, password) => {
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
-      setUser(userCredential.user); // ✅ THIS WAS MISSING!
+      setUser(userCredential.user);
       return userCredential;
     } catch (error) {
       if (error.code === "auth/user-not-found") {
@@ -52,7 +54,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // 📝 REGISTER — FIXED (auto logout AFTER creation, safe) ✅
+  // 📝 REGISTER
   const register = async (name, email, password, photoURL) => {
     setLoading(true);
     try {
@@ -68,9 +70,9 @@ export function AuthProvider({ children }) {
         photoURL: photoURL,
       });
 
-      // ✅ Safe logout after registration
       await signOut(auth);
       setUser(null);
+      router.push("/login");
 
       return userCredential;
     } catch (error) {
@@ -83,12 +85,12 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // 🔵 GOOGLE LOGIN — FIXED ✅
+  // 🔵 GOOGLE LOGIN
   const googleLogin = async () => {
     setLoading(true);
     try {
       const result = await signInWithPopup(auth, provider);
-      setUser(result.user); // ✅ THIS WAS MISSING!
+      setUser(result.user);
       return result;
     } catch (error) {
       throw new Error("Google login failed. Try again later.");
@@ -97,12 +99,13 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // 🚪 LOGOUT
+  // 🚪 LOGOUT ✅ AUTO REDIRECT TO LOGIN
   const logout = async () => {
     setLoading(true);
     try {
       await signOut(auth);
       setUser(null);
+      router.push("/login"); // 👈 AUTO REDIRECT
     } finally {
       setLoading(false);
     }
